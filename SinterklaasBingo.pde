@@ -2,7 +2,7 @@ int rectX, rectY;      // Position of square button
 int circleX, circleY;  // Position of circle button
 int rectSize = 90;     // Diameter of rect
 int circleSize = 93;   // Diameter of circle
-color rectColor, circleColor, baseColor;
+color rectColor, circleColor, bgColor;
 color rectHighlight, circleHighlight;
 color currentColor;
 boolean rectOver = false;
@@ -14,10 +14,18 @@ void setup() {
   String[] args = {"TwoFrameTest"};
   SecondApplet sa = new SecondApplet();
   PApplet.runSketch(args, sa);
-  //fullScreen();
-  //size(800, 480);
   
-  background(32, 32, 32);
+  //  COLORS
+  bgColor = color(32, 32, 32);
+  rectColor = color(0);
+  rectHighlight = color(51);
+  
+  //POSITIONS
+  rectX = width/2-rectSize-10;
+  rectY = height/2-rectSize/2;
+  
+  // Fill background
+  background(bgColor);
   ellipse(50, 50, 10, 10);
   text(testString, 10,10);
 
@@ -29,10 +37,15 @@ void settings()
 
 void draw() {
   update(mouseX, mouseY);
-  //Draw background
-  
+   
   //Draw elements
-  
+  if (rectOver) {
+    fill(rectHighlight);
+  } else {
+    fill(rectColor);
+  }
+  stroke(255);
+  rect(rectX, rectY, rectSize, rectSize);
 }     
 
 void update(int x, int y)
