@@ -1,17 +1,27 @@
-int rectX, rectY;      // Position of square button
+//BINGO VARIABLES
+int bingoHighestNumber = 90;
+
+
+int[] bingoNumbers;
+int rectNextX, rectNextY;      // Position of square button
 int circleX, circleY;  // Position of circle button
-int rectSize = 90;     // Diameter of rect
+int rectSize = 120;     // Diameter of rect
 int circleSize = 93;   // Diameter of circle
 color rectColor, circleColor, bgColor;
-color rectHighlight, circleHighlight;
+color rectHighlight, rectPressed;
 color currentColor;
 boolean rectOver = false;
 boolean circleOver = false;
 
-String testString = "Hello world on both monitors";
+
 
 void setup() {
-  String[] args = {"TwoFrameTest"};
+  bingoNumbers = new int[bingoHighestNumber];
+  for(int i =0; i < bingoNumbers.length; i++)
+  {
+    bingoNumbers[i] = i + 1;    //Place 0 is 1 etc. etc. 
+  }
+  String[] args = {"Bingo Screen"};
   SecondApplet sa = new SecondApplet();
   PApplet.runSketch(args, sa);
   
@@ -19,15 +29,14 @@ void setup() {
   bgColor = color(32, 32, 32);
   rectColor = color(0);
   rectHighlight = color(51);
+  rectPressed = color(100);
   
   //POSITIONS
-  rectX = width/2-rectSize-10;
-  rectY = height/2-rectSize/2;
+  rectNextX = 10;  //width/2-rectSize-10;
+  rectNextY = 10;  //height/2-rectSize/2;
   
   // Fill background
   background(bgColor);
-  ellipse(50, 50, 10, 10);
-  text(testString, 10,10);
 
 }
 void settings()
@@ -36,7 +45,7 @@ void settings()
 }
 
 void draw() {
-  update(mouseX, mouseY);
+  update();
    
   //Draw elements
   if (rectOver) {
@@ -45,15 +54,17 @@ void draw() {
     fill(rectColor);
   }
   stroke(255);
-  rect(rectX, rectY, rectSize, rectSize);
+  rect(rectNextX, rectNextY, rectSize, rectSize / 2);
+  fill(255);
+  text("Volgende nummer", rectNextX + 10, rectNextY + (rectSize / 4) + 5);
 }     
 
-void update(int x, int y)
+void update()
 {
   if ( overCircle(circleX, circleY, circleSize) ) {
     circleOver = true;
     rectOver = false;
-  } else if ( overRect(rectX, rectY, rectSize, rectSize) ) {
+  } else if ( overRect(rectNextX, rectNextY, rectSize, rectSize) ) {
     rectOver = true;
     circleOver = false;
   } else {
@@ -80,7 +91,16 @@ boolean overCircle(int x, int y, int diameter) {
   }
 }
 
-
+void mousePressed() {
+  if (circleOver) {
+    currentColor = circleColor;
+  }
+  if (rectOver) {
+    fill(rectPressed);
+  }
+  stroke(255);
+  rect(rectNextX, rectNextY, rectSize, rectSize / 2);
+}
 
 
 
@@ -94,7 +114,7 @@ public class SecondApplet extends PApplet {
     background(50, 200, 255);
     fill(0);
     ellipse(100, 50, 10, 10);
-    text(testString, 10,10);
+    
   }
   
   public void settings() {
