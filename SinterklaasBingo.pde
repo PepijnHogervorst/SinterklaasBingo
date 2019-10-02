@@ -23,7 +23,8 @@ void draw() {
 public class SecondApplet extends PApplet {
 
   public void settings() {
-    size(800, 480);
+    //size(800, 480);
+    fullScreen();
   }
   public void draw() {
     background(50, 200, 255);
