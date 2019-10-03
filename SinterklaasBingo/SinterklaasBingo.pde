@@ -1,7 +1,7 @@
 //BINGO VARIABLES edit to your needs
 int bingoHighestNumber = 90;
 int historySize = 3; //CANT BE BIGGER THAN 5
-
+color bgColorApp = color(50, 200, 255);
 
 //DONT EDIT BELOW THIS POINT UNLESS YOU KNOW WHAT YOU ARE DOING!
 ArrayList<Integer> bingoNumbers = new ArrayList<Integer>();
@@ -17,7 +17,7 @@ int circleSize = 93;   // Diameter of circle
 int nrOfVLines = (bingoHighestNumber > 10) ? 11 : bingoHighestNumber + 1 ;
 int nrOfHLines = ((bingoHighestNumber + 9) / 10) + 1;
 
-color rectColor, circleColor, bgColorApp, bgColor;
+color rectColor, circleColor, bgColor;
 color rectHighlight, rectPressed;
 color currentColor; 
 
@@ -51,7 +51,6 @@ void setup() {
   
   //COLORS
   bgColor = color(32, 32, 32);
-  bgColorApp = color(50, 200, 255);
   rectColor = color(0);
   rectHighlight = color(51);
   rectPressed = color(100);
@@ -66,6 +65,11 @@ void setup() {
   background(bgColor);
   
   //Draw number grid lines
+  drawGrid();  
+}
+
+void drawGrid()
+{
   stroke(160);
   for(int i = 0; i < nrOfHLines; i++)
   { //HORIZONTAL
@@ -75,9 +79,8 @@ void setup() {
   { //VERTICAL
     line(xStart + (((width - xStart) / nrOfVLines) * i), 20, xStart + (((width - xStart) / nrOfVLines) * i), yStart + (height - yStart) / nrOfHLines * (nrOfHLines - 1));
   }
-  
-
 }
+
 void settings()
 {
   size(1000, 600);
@@ -118,13 +121,13 @@ void draw() {
   
   //Draw text in btn next
   fill(255);
-  textSize(12);
+  textSize(16);
   textAlign(CENTER, CENTER);
-  text("Volgende nummer", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
+  text("Volgende nr", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
   
   //Draw text in btn reset
   fill(255);
-  textSize(12);
+  textSize(16);
   textAlign(CENTER, CENTER);
   text("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));
   
@@ -212,6 +215,19 @@ void btnReset_Pressed()
   fill(rectPressed);
   stroke(255);
   rect(rectResetX, rectResetY, rectSize, rectSize / 2);
+  
+  numberShown = 0;
+  background(bgColor);
+  drawGrid();
+  
+  bingoNumbers.clear();
+  numbersDone.clear();
+  
+  //Fill bingo list with all number up to highest number
+  for(int i =0; i < bingoHighestNumber; i++)
+  {
+    bingoNumbers.add(i + 1); 
+  }
 }
 
 void drawPicture()
