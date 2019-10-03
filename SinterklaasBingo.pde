@@ -37,7 +37,6 @@ void setup() {
   }
   
   //IMAGES
-  imgCircle = loadImage("/Pictures/circle.png");
   imgSint = loadImage("/Pictures/SinterklaasIcon.png");
   imgDaken = loadImage("/Pictures/daken.png");
   imgPiet = loadImage("/Pictures/piet.png");
@@ -85,7 +84,14 @@ void draw() {
    
   //Draw elements
   if (rectNextOver) {
-    fill(rectHighlight);
+    if(mousePressed)
+    {
+      fill(rectPressed);
+    }
+    else
+    {
+      fill(rectHighlight);
+    }
   } else {
     fill(rectColor);
   }
@@ -102,7 +108,7 @@ void draw() {
 
 void update()
 {
-  if ( overNextRect(rectNextX, rectNextY, rectSize, rectSize) ) {
+  if ( overNextRect(rectNextX, rectNextY, rectSize, rectSize / 2) ) {
     rectNextOver = true;
   } else {
     rectNextOver = false;
