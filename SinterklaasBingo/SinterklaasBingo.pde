@@ -10,6 +10,7 @@ ArrayList<Integer> numbersDone = new ArrayList<Integer>();
 int numberShown = 0; 
 float time = 0; float prevTime = 0;
 int rectNextX, rectNextY;      // Position of square button
+int rectResetX, rectResetY;      // Position of square button
 int circleX, circleY;  // Position of circle button
 int rectSize = 120;     // Diameter of rect
 int circleSize = 93;   // Diameter of circle
@@ -21,6 +22,7 @@ color rectHighlight, rectPressed;
 color currentColor; 
 
 boolean rectNextOver = false;
+boolean rectResetOver = false;
 boolean pictureChanged = false;
 
 PImage imgCircle, imgSint, imgDaken, imgPiet, imgSnoep;
@@ -57,6 +59,8 @@ void setup() {
   //POSITIONS
   rectNextX = 10;  //width/2-rectSize-10;
   rectNextY = 10;  //height/2-rectSize/2;
+  rectResetX = rectNextX;
+  rectResetY = height - rectSize/2 - rectNextY;
   
   // Fill background
   background(bgColor);
@@ -97,25 +101,52 @@ void draw() {
   }
   stroke(255);
   rect(rectNextX, rectNextY, rectSize, rectSize / 2);
+  if (rectResetOver)
+  {
+    if(mousePressed)
+    {
+      fill(rectPressed);
+    }
+    else
+    {
+      fill(rectHighlight);
+    }
+  } else {
+    fill(rectColor);
+  }
+  rect(rectResetX, rectResetY, rectSize, rectSize / 2);
+  
   //Draw text in btn next
   fill(255);
   textSize(12);
   textAlign(CENTER, CENTER);
   text("Volgende nummer", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
   
+  //Draw text in btn reset
+  fill(255);
+  textSize(12);
+  textAlign(CENTER, CENTER);
+  text("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));
+  
   
 }     
 
 void update()
 {
-  if ( overNextRect(rectNextX, rectNextY, rectSize, rectSize / 2) ) {
+  if ( overRect(rectNextX, rectNextY, rectSize, rectSize / 2) ) {
     rectNextOver = true;
   } else {
     rectNextOver = false;
   }
+  if( overRect(rectResetX, rectResetY, rectSize, rectSize / 2) ) {
+    rectResetOver = true;
+  }
+  else {
+    rectResetOver = false;
+  }
 }
 
-boolean overNextRect(int x, int y, int width, int height)  {
+boolean overRect(int x, int y, int width, int height)  {
   if (mouseX >= x && mouseX <= x+width && 
       mouseY >= y && mouseY <= y+height) {
     return true;
@@ -124,9 +155,13 @@ boolean overNextRect(int x, int y, int width, int height)  {
   }
 }
 
+
 void mousePressed() {
   if (rectNextOver) {
     btnNext_Pressed();
+  }
+  else if(rectResetOver) {
+    btnReset_Pressed();
   }
 }
 
@@ -169,6 +204,14 @@ void btnNext_Pressed()
       }
   }
   
+}
+
+void btnReset_Pressed()
+{
+  //Fill rectangle
+  fill(rectPressed);
+  stroke(255);
+  rect(rectResetX, rectResetY, rectSize, rectSize / 2);
 }
 
 void drawPicture()
