@@ -248,7 +248,7 @@ void drawPicture()
 }
 
 
-
+/***SECONDS SCREEN***/
 
 public class SecondApplet extends PApplet {
   
