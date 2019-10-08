@@ -2,6 +2,9 @@
 int bingoHighestNumber = 90;
 int historySize = 3; //CANT BE BIGGER THAN 5
 color bgColorApp = color(50, 200, 255);
+color[] colorBingoBall = {
+  color(200, 0 ,0), color(0, 200, 0), color(0, 0, 200), color(200, 0, 200), color(0, 200, 200), color(200, 200, 0)
+};
 
 //DONT EDIT BELOW THIS POINT UNLESS YOU KNOW WHAT YOU ARE DOING!
 ArrayList<Integer> bingoNumbers = new ArrayList<Integer>();
@@ -249,6 +252,9 @@ void drawPicture()
 
 public class SecondApplet extends PApplet {
   
+  int prevNumber = 0;
+  color currentBingoColor = colorBingoBall[0];
+  
   public void setup() {
     background(bgColorApp);
     fill(0);
@@ -277,10 +283,14 @@ public class SecondApplet extends PApplet {
     
     if(numberShown != 0)
     {
-      //Draw circle (bingo ball)
-      fill(200, 0, 0);
-      
-      
+      //Draw circle (bingo ball), USER NEEDS TO DEFINE NUMBER OF COLORS
+      if(prevNumber != numberShown)
+      {
+        float number = random(6);
+        currentBingoColor = colorBingoBall[floor(number)];
+        prevNumber = numberShown;
+      }
+      fill(currentBingoColor);
       
       ellipse(width / 2, height / 2, width / 4, width / 4);
       //Draw text 
