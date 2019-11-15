@@ -1,4 +1,7 @@
-//BINGO VARIABLES edit to your needs
+// IMPORTS 
+import processing.video.*;    //For video player 
+
+// BINGO VARIABLES edit to your needs
 int bingoHighestNumber = 90;
 int historySize = 3; //CANT BE BIGGER THAN 5
 color bgColorApp = color(50, 200, 255);
@@ -254,12 +257,14 @@ public class SecondApplet extends PApplet {
   
   int prevNumber = 0;
   color currentBingoColor = colorBingoBall[0];
+  Movie myMovie;
   
   public void setup() {
     background(bgColorApp);
     fill(0);
     ellipse(100, 50, 10, 10);
-    
+    myMovie = new Movie(this, "/test.mov");
+    myMovie.loop();
   }
   
   public void settings() {
@@ -308,5 +313,13 @@ public class SecondApplet extends PApplet {
     
     //Draw picture here
     drawPicture();
+    
+    //Resolution of movie here: PLEASE SCALE IT YOURSELF
+    image(myMovie, 1280, 720);
+  }
+  
+  // Called when new frame is available
+  void movieEvent(Movie m) {
+    m.read();
   }
 }
