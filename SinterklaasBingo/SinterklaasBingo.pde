@@ -17,9 +17,9 @@ int numberShown = 0;
 float time = 0; float prevTime = 0;
 int rectNextX, rectNextY;      // Position of square button
 int rectResetX, rectResetY;      // Position of square button
-int circleX, circleY;  // Position of circle button
+int rectPlayX, rectPlayY;
+int rectStopX, rectStopY;
 int rectSize = 120;     // Diameter of rect
-int circleSize = 93;   // Diameter of circle
 int nrOfVLines = (bingoHighestNumber > 10) ? 11 : bingoHighestNumber + 1 ;
 int nrOfHLines = ((bingoHighestNumber + 9) / 10) + 1;
 
@@ -29,10 +29,15 @@ color currentColor;
 
 boolean rectNextOver = false;
 boolean rectResetOver = false;
+boolean rectPlayOver = false;
+boolean rectStopOver = false;
 boolean pictureChanged = false;
+boolean MovieFlag = true;
 
 PImage imgCircle, imgSint, imgDaken, imgPiet, imgSnoep;
 PImage[] slideShow;
+
+Movie myMovie;
 
 //GRID variables
 int xStart = 200; int yStart = 20;
@@ -49,6 +54,10 @@ void setup() {
   imgDaken = loadImage("/Pictures/daken.png");
   imgPiet = loadImage("/Pictures/piet.png");
   imgSnoep = loadImage("/Pictures/snoep.png");
+  
+  myMovie = new Movie(this, "test.mov");
+  myMovie.loop();
+  myMovie.frameRate(5);
   
   //Create seconds screen
   String[] args = {"Bingo Screen"};
@@ -138,7 +147,11 @@ void draw() {
   text("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));
   
   
-}     
+}   
+
+void movieEvent(Movie m) {
+  m.read();
+}
 
 void update()
 {
@@ -257,14 +270,10 @@ public class SecondApplet extends PApplet {
   
   int prevNumber = 0;
   color currentBingoColor = colorBingoBall[0];
-  Movie myMovie;
   
   public void setup() {
     background(bgColorApp);
     fill(0);
-    ellipse(100, 50, 10, 10);
-    myMovie = new Movie(this, "/test.mov");
-    myMovie.loop();
   }
   
   public void settings() {
@@ -272,6 +281,16 @@ public class SecondApplet extends PApplet {
     fullScreen();
   }
   public void draw() {
+    // Depending on movie flag show bingo screen or show movie:
+    
+    if(MovieFlag)
+    {
+      //Resolution of movie here: PLEASE CALCULATE THE X AND Y COORDS YOURSELF
+      rect(0,0, width, height);
+      image(myMovie, 0, 0);
+      return;
+    }
+    
     background(50, 200, 255);
     
     image(imgSint, 10, 10, width / 8, width / 8);
@@ -304,18 +323,18 @@ public class SecondApplet extends PApplet {
       textAlign(CENTER, CENTER);
       text(str(numberShown), width / 2, height / 2 - 40);
       
-      for(int i =0; i < (historySize < (numbersDone.size() - 1) ? historySize : (numbersDone.size() - 1)); i++)
+      for(int i =0; i < (historySize < (numbersDone.size() - 1) ? historySize : (numbersDone.size() - 1)); i++) //<>//
       {
         textSize(150 - (i * 20));
         text(str(numbersDone.get(numbersDone.size() - i - 2)), (width / (historySize + 1)) * (i + 1), 100);
       }
+      
     }
     
     //Draw picture here
     drawPicture();
     
-    //Resolution of movie here: PLEASE SCALE IT YOURSELF
-    image(myMovie, 1280, 720);
+    
   }
   
   // Called when new frame is available
