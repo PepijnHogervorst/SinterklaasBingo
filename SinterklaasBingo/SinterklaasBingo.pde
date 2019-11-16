@@ -36,6 +36,7 @@ boolean MovieFlag = true;
 
 PImage imgCircle, imgSint, imgDaken, imgPiet, imgSnoep;
 PImage[] slideShow;
+PImage imgPlay, imgPause;
 
 Movie myMovie;
 
@@ -54,6 +55,8 @@ void setup() {
   imgDaken = loadImage("/Pictures/daken.png");
   imgPiet = loadImage("/Pictures/piet.png");
   imgSnoep = loadImage("/Pictures/snoep.png");
+  imgPlay = loadImage("/Pictures/play.png");
+  imgPause = loadImage("/Pictures/pause.png");
   
   myMovie = new Movie(this, "test.mov");
   myMovie.loop();
@@ -119,6 +122,14 @@ void draw() {
   drawText("Volgende nr", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
   drawText("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));  
   
+  fill(bgColor);
+  stroke(bgColor);
+  rect(rectPlayX, rectPlayY - 60, rectSize, 57);
+  drawText((MovieFlag ? "Film actief" : "Bingo actief"), rectPlayX + rectSize / 2 , rectPlayY - 40);
+  
+  // Draw play and pause icons
+  image(imgPlay, rectPlayX + 3, rectPlayY + 3, rectSize / 2 - 6, rectSize / 2 - 6);
+  image(imgPause, rectStopX + 3, rectStopY + 3, rectSize / 2 - 6, rectSize / 2 - 6);
 }   
 
 void update()
@@ -198,43 +209,7 @@ void mousePressed() {
 
 void btnNext_Pressed()
 {
-  //Fill rectangle
-  fill(rectPressed);
-  stroke(255);
-  rect(rectNextX, rectNextY, rectSize, rectSize / 2);
-  
-  //Update number to new random from array
-  float number = random(bingoNumbers.size());
-  if(bingoNumbers.size() > 0)
-  {
-    int intNumber = floor(number);
-    numberShown = bingoNumbers.get(intNumber);
-    //Remove
-    bingoNumbers.remove(intNumber);
-    numbersDone.add(numberShown);
-    //Show and place number
-    fill(255);
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    text(str(numberShown), 
-      xStart + ((width - xStart) / nrOfVLines * ((numberShown - 1) % 10)) + (width - xStart) / (nrOfVLines * 2) ,
-      yStart + ((height - yStart) /nrOfHLines * ((numberShown - 1) / 10)) + (height - yStart) / (nrOfHLines* 2));
-      
-    //Update history
-    //clear old history
-    fill(bgColor);
-    stroke(bgColor);
-    rect(rectNextX, rectNextY  + 100, rectSize + 30, height);
-    
-    fill(255);
-    textAlign(CENTER, TOP);
-    for(int i =0; i < ((historySize + 1) < numbersDone.size() ? (historySize + 1) : numbersDone.size()); i++)
-      {
-        textSize(70 - (i * 10));
-        text(str(numbersDone.get(numbersDone.size() - i - 1)), rectNextX + rectSize / 2, rectNextY + 100 + (i * 60));
-      }
-  }
-  
+    NextNr();
 }
 
 void btnReset_Pressed()
@@ -283,6 +258,70 @@ void drawPicture()
       
       pictureChanged = true;
     }
+  }
+}
+
+void keyPressed()
+{
+  if(key == ' ')
+  {
+    NextNr();
+  }
+  else if(key == 'p')
+  {
+    MovieFlag = !MovieFlag;
+    if(MovieFlag)
+      myMovie.play(); 
+    else 
+      myMovie.pause();
+  }
+  else if(keyCode == ENTER || keyCode == RETURN)
+  {
+    MovieFlag = !MovieFlag;
+    if(MovieFlag)
+      myMovie.play(); 
+    else 
+      myMovie.pause();
+  }
+}
+
+void NextNr()
+{
+  //Fill rectangle
+  fill(rectPressed);
+  stroke(255);
+  rect(rectNextX, rectNextY, rectSize, rectSize / 2);
+  
+  //Update number to new random from array
+  float number = random(bingoNumbers.size());
+  if(bingoNumbers.size() > 0)
+  {
+    int intNumber = floor(number);
+    numberShown = bingoNumbers.get(intNumber);
+    //Remove
+    bingoNumbers.remove(intNumber);
+    numbersDone.add(numberShown);
+    //Show and place number
+    fill(255);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text(str(numberShown), 
+      xStart + ((width - xStart) / nrOfVLines * ((numberShown - 1) % 10)) + (width - xStart) / (nrOfVLines * 2) ,
+      yStart + ((height - yStart) /nrOfHLines * ((numberShown - 1) / 10)) + (height - yStart) / (nrOfHLines* 2));
+      
+    //Update history
+    //clear old history
+    fill(bgColor);
+    stroke(bgColor);
+    rect(rectNextX, rectNextY  + 100, rectSize + 30, height);
+    
+    fill(255);
+    textAlign(CENTER, TOP);
+    for(int i =0; i < ((historySize + 1) < numbersDone.size() ? (historySize + 1) : numbersDone.size()); i++)
+      {
+        textSize(70 - (i * 10));
+        text(str(numbersDone.get(numbersDone.size() - i - 1)), rectNextX + rectSize / 2, rectNextY + 100 + (i * 60));
+      }
   }
 }
 
