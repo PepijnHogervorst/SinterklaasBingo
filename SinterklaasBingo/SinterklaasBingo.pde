@@ -15,8 +15,8 @@ ArrayList<Integer> numbersDone = new ArrayList<Integer>();
 
 int numberShown = 0; 
 float time = 0; float prevTime = 0;
-int rectNextX, rectNextY;      // Position of square button
-int rectResetX, rectResetY;      // Position of square button
+int rectNextX, rectNextY;        // Position of next number button
+int rectResetX, rectResetY;      // Position of reset button
 int rectPlayX, rectPlayY;
 int rectStopX, rectStopY;
 int rectSize = 120;     // Diameter of rect
@@ -75,7 +75,10 @@ void setup() {
   rectNextY = 10;  //height/2-rectSize/2;
   rectResetX = rectNextX;
   rectResetY = height - rectSize/2 - rectNextY;
-  
+  rectPlayX = rectNextX;
+  rectPlayY = rectResetY - (rectSize / 2) - rectNextY;
+  rectStopX = rectNextX + (rectSize / 2) + rectNextY;
+  rectStopY = rectPlayY;
   // Fill background
   background(bgColor);
   
@@ -104,54 +107,19 @@ void settings()
 void draw() {
   update();
    
-  //Draw elements
-  if (rectNextOver) {
-    if(mousePressed)
-    {
-      fill(rectPressed);
-    }
-    else
-    {
-      fill(rectHighlight);
-    }
-  } else {
-    fill(rectColor);
-  }
-  stroke(255);
-  rect(rectNextX, rectNextY, rectSize, rectSize / 2);
-  if (rectResetOver)
-  {
-    if(mousePressed)
-    {
-      fill(rectPressed);
-    }
-    else
-    {
-      fill(rectHighlight);
-    }
-  } else {
-    fill(rectColor);
-  }
-  rect(rectResetX, rectResetY, rectSize, rectSize / 2);
-  
+  //Draw elements, Button next number
+  drawButton(rectNextX, rectNextY, rectSize, rectSize / 2, rectNextOver);
+  // Button reset
+  drawButton(rectResetX, rectResetY, rectSize, rectSize / 2, rectResetOver);
+  // Button play
+  drawButton(rectPlayX, rectPlayY, rectSize / 2, rectSize / 2, rectPlayOver);
+  // Button stop
+  drawButton(rectStopX, rectStopY, rectSize / 2, rectSize / 2, rectStopOver);
   //Draw text in btn next
-  fill(255);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  text("Volgende nr", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
-  
-  //Draw text in btn reset
-  fill(255);
-  textSize(16);
-  textAlign(CENTER, CENTER);
-  text("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));
-  
+  drawText("Volgende nr", rectNextX + rectSize/2, rectNextY + (rectSize / 4));
+  drawText("Nieuw spel", rectResetX + rectSize/2, rectResetY + (rectSize / 4));  
   
 }   
-
-void movieEvent(Movie m) {
-  m.read();
-}
 
 void update()
 {
@@ -166,6 +134,41 @@ void update()
   else {
     rectResetOver = false;
   }
+  rectPlayOver = overRect(rectPlayX, rectPlayY, rectSize / 2, rectSize / 2);
+  rectStopOver = overRect(rectStopX, rectStopY, rectSize / 2, rectSize / 2);
+}
+
+void drawButton(int x, int y, int _width, int _height, boolean mouseOverObject)
+{
+  if(mouseOverObject)
+  {
+    if(mousePressed)
+    {
+      fill(rectPressed);
+    }
+    else
+    {
+      fill(rectHighlight);
+    }
+  }
+  else
+  {
+    fill(rectColor);
+  }
+  stroke(255);
+  rect(x, y, _width, _height);
+}
+
+void movieEvent(Movie m) {
+  m.read();
+}
+
+void drawText(String text, int x, int y)
+{
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text(text, x, y);
 }
 
 boolean overRect(int x, int y, int width, int height)  {
@@ -184,6 +187,12 @@ void mousePressed() {
   }
   else if(rectResetOver) {
     btnReset_Pressed();
+  }
+  else if(rectPlayOver) {
+    btnPlay_Pressed();
+  }
+  else if(rectStopOver) {
+    btnStop_Pressed();
   }
 }
 
@@ -249,6 +258,20 @@ void btnReset_Pressed()
   }
 }
 
+void btnPlay_Pressed()
+{
+  //Play movie
+  MovieFlag = true;
+  myMovie.play();
+}
+
+void btnStop_Pressed()
+{
+  //Pauze movie
+  MovieFlag = false;
+  myMovie.pause();
+}
+
 void drawPicture()
 {
   time = second();
@@ -286,6 +309,7 @@ public class SecondApplet extends PApplet {
     if(MovieFlag)
     {
       //Resolution of movie here: PLEASE CALCULATE THE X AND Y COORDS YOURSELF
+      fill(0);
       rect(0,0, width, height);
       image(myMovie, 0, 0);
       return;
@@ -323,7 +347,7 @@ public class SecondApplet extends PApplet {
       textAlign(CENTER, CENTER);
       text(str(numberShown), width / 2, height / 2 - 40);
       
-      for(int i =0; i < (historySize < (numbersDone.size() - 1) ? historySize : (numbersDone.size() - 1)); i++) //<>//
+      for(int i =0; i < (historySize < (numbersDone.size() - 1) ? historySize : (numbersDone.size() - 1)); i++)
       {
         textSize(150 - (i * 20));
         text(str(numbersDone.get(numbersDone.size() - i - 2)), (width / (historySize + 1)) * (i + 1), 100);
@@ -342,3 +366,7 @@ public class SecondApplet extends PApplet {
     m.read();
   }
 }
+
+
+// Icon: Video-player Button made by SmashIcons from www.flaticon.com
+// Icon: Pauze Button made by SmashIcons from www.flaticon.com
